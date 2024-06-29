@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { IOrder, IOrderReport, IOrderReportFormattedProduct, IOrderReportProduct } from "../../types";
-import { getOrderFromApi } from "../../services/gerOrderFromApi";
+import { IOrderReport, IOrderReportFormattedProduct, IOrderReportProduct } from "../../types";
+import { getOrderFromApi } from "../../services/getOrderFromApi";
 import Loader from "@/components/Loader";
 import { IOrderManagerProps } from "./types";
 import Table from "@/components/Table";
