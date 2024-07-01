@@ -30,8 +30,37 @@ th {
   text-align: left;
 }
 
+a {
+  display: inline-block;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/*
+  utilities
+  TODO: fix Next.js Tailwind integration missed common utilities
+*/
+
+.items-end {
+  align-items: flex-end;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.basis-24 {
+  flex-basis: 6rem; /* 96px */
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.max-w-3xl {
+  max-width: 48rem; /* 768px */
 }
