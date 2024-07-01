@@ -3,7 +3,7 @@ import ProductSingleSelector from "@/modules/Products/components/ProductSingleSe
 import { IProductSellerProps, IProductSellerRef } from "./types";
 import Button from "@/components/Button";
 import { IOrderProduct } from "@/modules/Orders/types";
-import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { IOnFormChangeConfig } from "@/types";
 import Form from "@/components/Form";
 import Section from "@/components/Section";
@@ -13,7 +13,6 @@ import { IProduct } from "@/modules/Products/types";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { cloneDeep } from "lodash";
 import CurrencyFormat from "@/components/CurrencyFormat";
-import FormGrid from "@/components/FormGrid";
 
 const ProductSeller = forwardRef((props: Readonly<IProductSellerProps>, ref) => {
   const {
@@ -21,8 +20,10 @@ const ProductSeller = forwardRef((props: Readonly<IProductSellerProps>, ref) => 
     label,
     submitButtonText,
     isLoading,
+    formChildren,
     onAdd,
     onSubmit,
+    onChangeSubtotal,
   } = props
 
   const [orderProduct, setOrderProduct] = useState<IOrderProduct>({
@@ -32,7 +33,6 @@ const ProductSeller = forwardRef((props: Readonly<IProductSellerProps>, ref) => 
 
   const [products, setProducts] = useState<Record<string, IOrderProduct>>({});
   const [productsById, setProductsById] = useState<Record<string, IProduct>>({});
-  const [discounts, setDiscounts] = useState<number>(0);
 
   const componentName = name ?? 'product-seller'
   const submitText = submitButtonText ?? 'Add a new Order'
@@ -58,8 +58,6 @@ const ProductSeller = forwardRef((props: Readonly<IProductSellerProps>, ref) => 
     }, 0)
   }, [products])
 
-  const total = useMemo<number>(() => subtotal - discounts, [subtotal, discounts])
-
   const productSaleList = useMemo<IProductSaleListItem[]>(() => Object.values(products).map(({ id, quantity }) => {
     const product = productsById[id]
     const total = formatCurrency(product.price * quantity)
@@ -70,6 +68,10 @@ const ProductSeller = forwardRef((props: Readonly<IProductSellerProps>, ref) => 
       quantity,
     }
   }), [products, productsById])
+
+  useEffect(() => {
+    onChangeSubtotal?.(subtotal)
+  }, [subtotal])
 
   function onChange(config: IOnFormChangeConfig<IOrderProduct>) {
     const { key, value } = config
@@ -133,14 +135,12 @@ const ProductSeller = forwardRef((props: Readonly<IProductSellerProps>, ref) => 
 
     onSubmit?.({
       products,
-      discounts,
       productsById,
     })
   }
 
   function cleanForm() {
     setProducts({})
-    setDiscounts(0)
   }
 
   useImperativeHandle<unknown, IProductSellerRef>(ref, () => {
@@ -194,28 +194,14 @@ const ProductSeller = forwardRef((props: Readonly<IProductSellerProps>, ref) => 
       </Section>
 
       <Form onSubmit={handleSubmit}>
-        <Section>
-          <FormGrid>
-            <Input
-              label="Discounts"
-              name="order-discounts"
-              type="number"
-              min={0}
-              value={discounts}
-              placeholder="0"
-              onChange={value => setDiscounts(value as number)}
-            />
-          </FormGrid>
-        </Section>
-
-        <Section>
-          Total: <CurrencyFormat value={total} />
-        </Section>
+        {formChildren}
 
         <Button
           disabled={!hasProducts}
           isLoading={isLoading}
-        >{submitText}</Button>
+        >
+          {submitText}
+        </Button>
       </Form>
     </>
   )

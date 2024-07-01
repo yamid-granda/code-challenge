@@ -1,20 +1,19 @@
 import { IOrderProduct } from "@/modules/Orders/types"
 import { IProduct } from "@/modules/Products/types"
-import { PropsWithRef } from "react"
+import { ReactNode } from "react"
 
-interface IProductSellerBaseProps {
+export interface IProductSellerProps {
   label?: string
   name?: string
   submitButtonText?: string
   isLoading?: boolean
+  formChildren?: ReactNode
   onAdd?: (value: IOrderProduct) => void
   onSubmit?: (form: IProductSellerSubmitData) => void
+  onChangeSubtotal?: (value: number) => void
 }
 
-export type IProductSellerProps = IProductSellerBaseProps
-
 export interface IProductSellerSubmitData {
-  discounts: number,
   products: Record<string, IOrderProduct>
   productsById: Record<string, IProduct>
 }
