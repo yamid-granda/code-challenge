@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import { addOrderFromApi } from "../../services/addOrderFromApi";
-import ProductSeller from "@/modules/Products/components/ProductSeller";
+import ProductSeller from "@/modules/Orders/components/ProductSeller";
 import Card from "@/components/Card";
 import Section from "@/components/Section";
-import { IProductSellerRef, IProductSellerSubmitData } from "@/modules/Products/components/ProductSeller/types";
+import { IProductSellerRef, IProductSellerSubmitData } from "@/modules/Orders/components/ProductSeller/types";
 import { getRoundProductBodiesFromOrderProductsDic } from "../../utils/getRoundProductBodiesFromOrderProductsDic";
 
 
