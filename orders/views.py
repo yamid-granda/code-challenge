@@ -19,11 +19,11 @@ class OrderView(viewsets.ModelViewSet):
 
     if page is not None:
       serializer = self.get_serializer(page, many=True)
-      return self.get_paginated_response(serializer.data)
+      orders_report = get_reports_from_orders(serializer.data)
+      return self.get_paginated_response(orders_report)
 
     serializer = self.get_serializer(queryset, many=True)
     orders_report = get_reports_from_orders(serializer.data)
-    print(serializer.data)
     return Response(orders_report)
   
   @action(methods=['GET'], detail=True)
@@ -31,7 +31,6 @@ class OrderView(viewsets.ModelViewSet):
     instance = self.get_object()
     serializer = self.get_serializer(instance)
     order_report = get_report_from_order(serializer.data)
-    print(serializer.data)
     return Response(order_report)
 
 # utils
