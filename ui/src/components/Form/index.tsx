@@ -5,8 +5,8 @@ import Card from "../Card";
 export default function From(props: Readonly<IFormProps>) {
   const {
     children,
-    actions,
     onSubmit,
+    className,
   } = props
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
@@ -15,11 +15,11 @@ export default function From(props: Readonly<IFormProps>) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Card>
-        <div className="grid gap-6 mb-6 md:grid-cols-2">{children}</div>
-        {actions && <div>{actions}</div>}
-      </Card>
+    <form
+      className={className}
+      onSubmit={handleSubmit}
+    >
+      {children}
     </form>
   )
 }
