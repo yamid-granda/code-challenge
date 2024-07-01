@@ -1,8 +1,10 @@
 'use client'
 
+import Button from "@/components/Button";
 import PageTitle from "@/components/PageTitle";
 import Section from "@/components/Section";
 import ProductsAggregator from "@/modules/Products/components/ProductsAggregator";
+import { PRODUCTS_UI_PATH } from "@/modules/Products/configs";
 
 export default function AddProductPage() {
   return (
@@ -14,6 +16,10 @@ export default function AddProductPage() {
 
       <Section>
         <ProductsAggregator />
+      </Section>
+
+      <Section>
+        <Button href={PRODUCTS_UI_PATH}>Go to Products Inventory</Button>
       </Section>
     </>
   )
