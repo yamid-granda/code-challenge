@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IOrderReport, IOrderReportFormattedProduct, IOrderReportProduct } from "../../types";
 import { getOrderFromApi } from "../../services/getOrderFromApi";
 import Loader from "@/components/Loader";
@@ -19,6 +19,7 @@ import { markPaidOrderFromApi } from "../../services/markPaidOrderFromApi";
 import Input from "@/components/Input";
 import Form from "@/components/Form";
 import { updateOrderFromApi } from "../../services/updateOrderFromApi";
+import { getSubtotalFromOrderReport } from "../../utils/getSubtotalFromOrderReport";
 
 const productsHeaders: ITableHeader[] = [
   { text: 'Product', value: 'productName' },
@@ -47,6 +48,9 @@ export default function OrderManager(props: Readonly<IOrderManagerProps>) {
   const [isNewRoundActive, setIsNewRoundActive] = useState<boolean>(false);
   const [isMarkingPaid, setIsMarkingPaid] = useState<boolean>(false);
   const [isUpdatingDiscounts, setIsUpdatingDiscounts] = useState(false);
+
+  const subtotal = useMemo(() => getSubtotalFromOrderReport(order), [order])
+  const total = useMemo(() => subtotal - order.discounts, [subtotal, order.discounts])
 
   useEffect(() => {
     getOrder()
@@ -105,7 +109,7 @@ export default function OrderManager(props: Readonly<IOrderManagerProps>) {
 
   async function onMarkPaid() {
     setIsMarkingPaid(true)
-    const response = await markPaidOrderFromApi({ id: order.id })
+    await markPaidOrderFromApi({ id: order.id })
     setIsMarkingPaid(false)
     getOrder()
   }
@@ -128,7 +132,14 @@ export default function OrderManager(props: Readonly<IOrderManagerProps>) {
       <>
         <Section>
           <div>Status: {getOrderStatus(order)}</div>
-          <div>Discounts: <CurrencyFormat value={order.discounts} /></div>
+          <div>Total: <CurrencyFormat value={total} /></div>
+        </Section>
+
+        <Section>
+          <div className="text-sm">
+            <div>Subtotal: <CurrencyFormat value={subtotal} /></div>
+            <div>Discounts: <CurrencyFormat value={-order.discounts} /></div>
+          </div>
         </Section>
 
         {!order.paid && (
