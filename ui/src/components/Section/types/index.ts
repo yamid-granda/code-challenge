@@ -1,3 +1,5 @@
 import { PropsWithChildren } from "react";
 
-export interface ISectionProps extends PropsWithChildren { }
+export interface ISectionProps extends PropsWithChildren {
+  className?: string
+}
