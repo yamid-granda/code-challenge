@@ -6,6 +6,7 @@ export interface IPublicDocument {
 interface ISuccessApiResponse<T> {
   response: T
   isOk: true
+  metadata: IApiResponseMetadata
 }
 
 interface IErrorApiResponse {
@@ -20,6 +21,13 @@ export interface IApiConfig {
   method: IHttpMethod
   url: string
   path?: string
+  searchParams?: Record<string, string>
+}
+
+export interface IApiResponseMetadata {
+  count: number
+  next: string
+  previous: string
 }
 
 // forms
