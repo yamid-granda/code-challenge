@@ -13,7 +13,7 @@ import { addRoundFromApi } from "../../services/addRoundFromApi";
 import ProductSeller from "@/modules/Products/components/ProductSeller";
 import Card from "@/components/Card";
 import { IProductSellerSubmitData } from "@/modules/Products/components/ProductSeller/types";
-import { getRoundProductBodiesFromOrderProductsDic } from "../../utils/getRoundProductsFromProducts";
+import { getRoundProductBodiesFromOrderProductsDic } from "../../utils/getRoundProductBodiesFromOrderProductsDic";
 import { getOrderStatus } from "../../utils/getOrderStatus";
 import { markPaidOrderFromApi } from "../../services/markPaidOrderFromApi";
 import Input from "@/components/Input";

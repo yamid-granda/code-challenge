@@ -4,7 +4,7 @@ import ProductSeller from "@/modules/Products/components/ProductSeller";
 import Card from "@/components/Card";
 import Section from "@/components/Section";
 import { IProductSellerRef, IProductSellerSubmitData } from "@/modules/Products/components/ProductSeller/types";
-import { getRoundProductBodiesFromOrderProductsDic } from "../../utils/getRoundProductsFromProducts";
+import { getRoundProductBodiesFromOrderProductsDic } from "../../utils/getRoundProductBodiesFromOrderProductsDic";
 
 
 export default function OrderAggregator() {
