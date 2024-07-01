@@ -1,6 +1,7 @@
 import { IOrderProduct } from "@/modules/Orders/types"
+import { IProductSingleSelectorRef } from "@/modules/Products/components/ProductSingleSelector/types"
 import { IProduct } from "@/modules/Products/types"
-import { ReactNode } from "react"
+import { ReactNode, RefObject } from "react"
 
 export interface IProductSellerProps {
   label?: string
@@ -20,4 +21,5 @@ export interface IProductSellerSubmitData {
 
 export interface IProductSellerRef {
   cleanForm: () => void
+  productSingleSelectorRef: RefObject<IProductSingleSelectorRef>
 }

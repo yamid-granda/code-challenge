@@ -6,3 +6,7 @@ export interface IProductSingleSelectorProps {
   onChange?: (value: string | number) => void
   onLoadProducts?: (value: IProduct[]) => void
 }
+
+export interface IProductSingleSelectorRef {
+  getProducts: () => Promise<void>
+}

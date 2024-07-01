@@ -35,6 +35,7 @@ export default function OrderAggregator() {
       return
 
     productSellerRef.current?.cleanForm()
+    productSellerRef.current?.productSingleSelectorRef.current?.getProducts()
     setDiscounts(0)
   }
 

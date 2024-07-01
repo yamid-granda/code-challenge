@@ -1,12 +1,12 @@
 import SingleSelector from "@/components/SingleSelector";
-import { IProductSingleSelectorProps } from "./types";
-import { useEffect, useMemo, useState } from "react";
+import { IProductSingleSelectorProps, IProductSingleSelectorRef } from "./types";
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { IProduct } from "../../types";
 import { getProductsFromApi } from "../../services/getProductsFromApi";
 import { ISelectorOption } from "@/components/SingleSelector/types";
 import { formatCurrency } from "@/utils/formatCurrency";
 
-export default function ProductSingleSelector(props: Readonly<IProductSingleSelectorProps>) {
+const ProductSingleSelector = forwardRef((props: Readonly<IProductSingleSelectorProps>, ref) => {
   const {
     label,
     name,
@@ -42,10 +42,18 @@ export default function ProductSingleSelector(props: Readonly<IProductSingleSele
     getProducts()
   }, []);
 
+  useImperativeHandle<unknown, IProductSingleSelectorRef>(ref, () => {
+    return {
+      getProducts
+    }
+  })
+
   return <SingleSelector
     options={options}
     label={label ?? 'Product'}
     name={name ?? 'product'}
     onChange={onChange}
   />
-};
+})
+
+export default ProductSingleSelector

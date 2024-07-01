@@ -1,9 +1,9 @@
 import Input from "@/components/Input";
 import ProductSingleSelector from "@/modules/Products/components/ProductSingleSelector";
-import { IProductSellerProps, IProductSellerRef } from "./types";
+import { IProductSellerProps } from "./types";
 import Button from "@/components/Button";
 import { IOrderProduct } from "@/modules/Orders/types";
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { IOnFormChangeConfig } from "@/types";
 import Form from "@/components/Form";
 import Section from "@/components/Section";
@@ -25,6 +25,8 @@ const ProductSeller = forwardRef((props: Readonly<IProductSellerProps>, ref) => 
     onSubmit,
     onChangeSubtotal,
   } = props
+
+  const productSingleSelectorRef = useRef<HTMLDivElement>(null)
 
   const [orderProduct, setOrderProduct] = useState<IOrderProduct>({
     id: 0,
@@ -143,9 +145,10 @@ const ProductSeller = forwardRef((props: Readonly<IProductSellerProps>, ref) => 
     setProducts({})
   }
 
-  useImperativeHandle<unknown, IProductSellerRef>(ref, () => {
+  useImperativeHandle(ref, () => {
     return {
       cleanForm,
+      productSingleSelectorRef,
     }
   })
 
@@ -158,6 +161,7 @@ const ProductSeller = forwardRef((props: Readonly<IProductSellerProps>, ref) => 
         >
           <div className="grow">
             <ProductSingleSelector
+              ref={productSingleSelectorRef}
               name={`${componentName}-product`}
               label={label}
               onChange={value => onChange({ value, key: 'id' })}
@@ -169,6 +173,7 @@ const ProductSeller = forwardRef((props: Readonly<IProductSellerProps>, ref) => 
             <Input
               name={`${componentName}-quantity`}
               type="number"
+              label="Quantity"
               value={orderProduct.quantity}
               min={1}
               onChange={value => onChange({ value, key: 'quantity' })}
