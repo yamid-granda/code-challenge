@@ -33,5 +33,5 @@ export interface IApiResponseMetadata {
 // forms
 export interface IOnFormChangeConfig<T> {
   key: keyof T
-  value: string
+  value: unknown
 }
