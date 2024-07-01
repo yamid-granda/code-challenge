@@ -1,33 +1,48 @@
-import Button from "@/components/Button";
-import Checkbox from "@/components/Checkbox";
-import Form from "@/components/Form";
-import Input from "@/components/Input";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { addOrderFromApi } from "../../services/addOrderFromApi";
+import ProductSeller from "@/modules/Products/components/ProductSeller";
+import Card from "@/components/Card";
+import Section from "@/components/Section";
+import { IProductSellerRef, IProductSellerSubmitData } from "@/modules/Products/components/ProductSeller/types";
+import { getRoundProductBodiesFromOrderProductsDic } from "../../utils/getRoundProductsFromProducts";
 
-export default function OrderCreator() {
-  const [isPaid, setIsPaid] = useState<boolean>(false);
 
-  function onChange(value: boolean) {
-    setIsPaid(value)
+export default function OrderAggregator() {
+  const productSellerRef = useRef<IProductSellerRef>(null)
+
+  const [isAdding, setIsAdding] = useState(false);
+
+  async function onSubmit({
+    discounts,
+    products,
+  }: IProductSellerSubmitData) {
+    if (isAdding) return
+
+    setIsAdding(true)
+
+    const addResponse = await addOrderFromApi({
+      body: { discounts },
+      roundProducts: getRoundProductBodiesFromOrderProductsDic(products)
+    })
+
+    setIsAdding(false)
+
+    if (!addResponse.isOk)
+      return
+
+    productSellerRef.current?.cleanForm()
   }
 
   return (
-    <Form
-      actions={<Button>Add a new Order</Button>}
-    >
-      <Input
-        label="Discounts"
-        name="order-discounts"
-        type="number"
-        placeholder="0"
-      />
-
-      <Checkbox
-        value={isPaid}
-        label="Is Paid ?"
-        name="order-is-paid"
-        onChange={onChange}
-      />
-    </Form>
+    <Section>
+      <Card>
+        <ProductSeller
+          ref={productSellerRef}
+          submitButtonText="Add a new Order"
+          onSubmit={onSubmit}
+          isLoading={isAdding}
+        />
+      </Card>
+    </Section>
   )
 };
