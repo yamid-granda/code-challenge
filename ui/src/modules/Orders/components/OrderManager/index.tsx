@@ -8,6 +8,17 @@ import { ITableHeader } from "@/components/Table/types";
 import DateFormat from "@/components/DateFormat";
 import Section from "@/components/Section";
 import CurrencyFormat from "@/components/CurrencyFormat";
+import Button from "@/components/Button";
+import { addRoundFromApi } from "../../services/addRoundFromApi";
+import ProductSeller from "@/modules/Products/components/ProductSeller";
+import Card from "@/components/Card";
+import { IProductSellerSubmitData } from "@/modules/Products/components/ProductSeller/types";
+import { getRoundProductBodiesFromOrderProductsDic } from "../../utils/getRoundProductsFromProducts";
+import { getOrderStatus } from "../../utils/getOrderStatus";
+import { markPaidOrderFromApi } from "../../services/markPaidOrderFromApi";
+import Input from "@/components/Input";
+import Form from "@/components/Form";
+import { updateOrderFromApi } from "../../services/updateOrderFromApi";
 
 const productsHeaders: ITableHeader[] = [
   { text: 'Product', value: 'productName' },
@@ -30,7 +41,12 @@ export default function OrderManager(props: Readonly<IOrderManagerProps>) {
     taxes: 0
   });
 
+  const [discounts, setDiscounts] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAddingRound, setIsAddingRound] = useState<boolean>(false);
+  const [isNewRoundActive, setIsNewRoundActive] = useState<boolean>(false);
+  const [isMarkingPaid, setIsMarkingPaid] = useState<boolean>(false);
+  const [isUpdatingDiscounts, setIsUpdatingDiscounts] = useState(false);
 
   useEffect(() => {
     getOrder()
@@ -70,14 +86,115 @@ export default function OrderManager(props: Readonly<IOrderManagerProps>) {
     return Object.values(productsDictionary)
   }
 
+  async function onAddNewRound() {
+    setIsNewRoundActive(!isNewRoundActive)
+  }
+
+  async function onSubmit({ products }: IProductSellerSubmitData) {
+    setIsAddingRound(true)
+
+    await addRoundFromApi({
+      body: { order_id: order.id },
+      roundProducts: getRoundProductBodiesFromOrderProductsDic(products),
+    })
+
+    setIsAddingRound(true)
+    setIsNewRoundActive(false)
+    await getOrder()
+  }
+
+  async function onMarkPaid() {
+    setIsMarkingPaid(true)
+    const response = await markPaidOrderFromApi({ id: order.id })
+    setIsMarkingPaid(false)
+    getOrder()
+  }
+
+  async function onUpdateDiscounts() {
+    setIsUpdatingDiscounts(true)
+
+    await updateOrderFromApi({
+      id: order.id,
+      body: { discounts },
+    })
+
+    setIsUpdatingDiscounts(false)
+    getOrder()
+  }
+
   return isLoading
     ? <Loader />
-    : order.rounds.map(({ id, created, round_products }, index) => round_products.length > 0 && (
-      <div key={id}>
-        <Section >
-          Round {index}: <DateFormat value={created} />
-          <Table headers={productsHeaders} rows={formatProducts(round_products)} />
+    : (
+      <>
+        <Section>
+          <div>Status: {getOrderStatus(order)}</div>
+          <div>Discounts: <CurrencyFormat value={order.discounts} /></div>
         </Section>
-      </div>
-    ))
+
+        {!order.paid && (
+          <Section>
+            <Form
+              onSubmit={onUpdateDiscounts}
+              className="flex items-end gap-4 max-w-3xl"
+            >
+              <Input
+                className="grow"
+                type="number"
+                min={0}
+                value={discounts}
+                name="order-discounts"
+                label="Update Discounts"
+                onChange={setDiscounts}
+              />
+
+              <Button disabled={isUpdatingDiscounts}>Update Discounts</Button>
+            </Form>
+          </Section>
+        )}
+
+        {order.rounds.map(({ id, created, round_products }, index) => round_products.length > 0 && (
+          <div key={id}>
+            <span className="text-xs">
+              Round {index + 1}: <DateFormat value={created} />
+            </span>
+
+            <Section >
+              <Table headers={productsHeaders} rows={formatProducts(round_products)} />
+            </Section>
+          </div>
+        ))}
+
+        {isNewRoundActive && (
+          <Section>
+            <Card>
+              <Section>New Round</Section>
+
+              <ProductSeller
+                onSubmit={onSubmit}
+                submitButtonText="Add a new Round"
+                isLoading={isAddingRound}
+              />
+            </Card>
+          </Section>
+        )}
+
+        <Section className="flex flex-wrap gap-4">
+          {!order.paid && (
+            <>
+              <Button
+                onClick={onMarkPaid}
+                isLoading={isMarkingPaid}
+              >
+                Mark as Paid
+              </Button>
+              <Button onClick={onAddNewRound}>
+                {isNewRoundActive ? 'Hide New Round' : 'Add New Round'}
+              </Button>
+            </>
+          )}
+
+        </Section>
+
+      </>
+    )
 };
