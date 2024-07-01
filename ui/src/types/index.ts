@@ -16,6 +16,7 @@ interface IErrorApiResponse {
 export type IApiResponse<T> = ISuccessApiResponse<T> | IErrorApiResponse
 
 export type IHttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+export type IHttpMethodKey = 'get' | 'post' | 'put' | 'patch' | 'delete'
 
 export interface IApiConfig {
   method: IHttpMethod
