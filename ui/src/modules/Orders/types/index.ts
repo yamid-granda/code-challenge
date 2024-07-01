@@ -39,3 +39,36 @@ export interface IOrderReportFormattedProduct {
   unitPrice: string | ReactNode
 }
 
+export interface IAddOrderBody {
+  paid?: boolean
+  discounts?: number
+}
+
+export interface IAddRoundBody {
+  order_id: IPublicDocument['id']
+}
+
+export interface IOrderProduct {
+  id: IPublicDocument['id']
+  quantity: number
+}
+
+export interface IRoundProduct extends IPublicDocument {
+  quantity: number
+  price: number
+  round_id: IPublicDocument['id']
+  product_id: IPublicDocument['id']
+}
+
+export interface IRoundProductBody {
+  quantity: number
+  price: number
+  round_id: IPublicDocument['id']
+  product_id: IPublicDocument['id']
+}
+
+export type IOrderStatus = 'Pending' | 'Paid'
+
+export interface IUpdateOrderBody {
+  discounts?: number
+}
