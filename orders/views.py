@@ -7,10 +7,13 @@ from rounds.models import Round
 from rounds.serializer import RoundSerializerItem
 from copy import deepcopy
 from rest_framework.decorators import action
+from django_filters import rest_framework as filters
 
 class OrderView(viewsets.ModelViewSet):
   serializer_class = OrderSerializer
   queryset = Order.objects.all()
+  filter_backends = (filters.DjangoFilterBackend,)
+  filterset_fields = ['paid']
 
   @action(methods=['GET'], detail=False)
   def reports(self, request):
