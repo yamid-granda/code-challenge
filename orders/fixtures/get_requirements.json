@@ -1,0 +1,39 @@
+[
+  {
+    "model": "products.product",
+    "pk": 1,
+    "fields": {
+      "name": "Corona",
+      "price": 100.0,
+      "quantity": 1,
+      "product_type_id": null
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 1,
+    "fields": {
+      "created": "2024-07-01T20:41:09.642Z",
+      "paid": false,
+      "discounts": 0.0
+    }
+  },
+  {
+    "model": "rounds.round",
+    "pk": 1,
+    "fields": {
+      "created": "2024-06-27T02:14:24.271Z",
+      "order_id": 1
+    }
+  },
+  {
+    "model": "round_products.roundproduct",
+    "pk": 1,
+    "fields": {
+      "quantity": 1,
+      "price": 100,
+      "round_id": 1,
+      "product_id": 1
+    }
+  }
+]
